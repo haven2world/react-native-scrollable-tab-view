@@ -58,12 +58,30 @@ const ScrollableTabView = React.createClass({
   },
 
   getInitialState() {
+    const width = Dimensions.get('window').width;
     return {
       currentPage: this.props.initialPage,
+      scrollX: new Animated.Value(this.props.initialPage * width),
       scrollValue: new Animated.Value(this.props.initialPage),
-      containerWidth: Dimensions.get('window').width,
+      containerWidth: width,
       sceneKeys: this.newSceneKeys({ currentPage: this.props.initialPage, }),
     };
+  },
+
+  componentDidMount() {
+    this.setTimeout(() => {
+      InteractionManager.runAfterInteractions(() => {
+        if (Platform.OS === 'android') {
+          this.goToPage(this.props.initialPage);
+        }
+      });
+    }, 0);
+
+    this.state.scrollX.addListener(({ value, }) => {
+      const scrollValue = value / this.state.containerWidth;
+      this.state.scrollValue.setValue(scrollValue);
+      this.props.onScroll(scrollValue);
+    });
   },
 
   componentWillReceiveProps(props) {
