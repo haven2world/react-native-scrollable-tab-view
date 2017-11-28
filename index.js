@@ -98,7 +98,9 @@ const ScrollableTabView = createReactClass({
     if(Platform.OS === 'android'){
       this.setTimeout(() => {
         InteractionManager.runAfterInteractions(() => {
-          this.goToPage(this.props.initialPage);
+          if(!this.stopAndroidInitial){
+            this.goToPage(this.props.initialPage);
+          }
         });
       }, 0);
 
@@ -128,6 +130,7 @@ const ScrollableTabView = createReactClass({
   },
 
   goToPage(pageNumber) {
+    this.stopAndroidInitial = true;
     const offset = pageNumber * this.state.containerWidth;
     if (this.scrollView) {
       this.scrollView.getNode().scrollTo({x: offset, y: 0, animated: !this.props.scrollWithoutAnimation, });
