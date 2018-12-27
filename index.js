@@ -95,14 +95,24 @@ const ScrollableTabView = createReactClass({
     };
   },
 
+
+
+
   componentDidMount() {
     if(Platform.OS === 'android'){
       this.setTimeout(() => {
         InteractionManager.runAfterInteractions(() => {
+          this.fixTimer&&clearTimeout(this.fixTimer);
           if(!this.stopAndroidInitial){
             this.goToPage(this.props.initialPage);
           }
         });
+        //因为部分情况下别的动画会影响到此段did mount的执行，导致runAfterInteractions没有生效，所以增加一个定时器补充执行
+        this.fixTimer = setTimeout(()=>{
+          if(!this.stopAndroidInitial){
+            this.goToPage(this.props.initialPage);
+          }
+        },1000);
       }, 0);
 
       this.state.scrollX.addListener(({ value, }) => {
