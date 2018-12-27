@@ -112,7 +112,7 @@ const ScrollableTabView = createReactClass({
           if(!this.stopAndroidInitial){
             this.goToPage(this.props.initialPage);
           }
-        },1000);
+        },300);
       }, 0);
 
       this.state.scrollX.addListener(({ value, }) => {
